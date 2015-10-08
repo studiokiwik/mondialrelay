@@ -43,7 +43,7 @@ var PS_MRObject = (function($, undefined) {
 
 // List the marker liable to the relay pint
 	var markerList = new Object();
-	
+
 	var selected = false;
 
 	/**
@@ -168,7 +168,7 @@ var PS_MRObject = (function($, undefined) {
 						$('#PS_MRLineOrderInformation-' + id_order).remove();
 						$('#successCreatingTicket_' + id_order).fadeIn('slow');
 						detailedExpeditionList.push({'id_order':id_order, 'expeditionNumber':json.success[id_order].expeditionNumber});
-						
+
 						if (!$('#detailHistory_' + id_order).length)
 						{
 							$('#PS_MRHistoriqueTableList').append('\
@@ -190,7 +190,7 @@ var PS_MRObject = (function($, undefined) {
 						}
 						$('#successCreatingTicket_' + id_order).fadeOut('slow');
 					}
-					
+
 					$('.PS_MRSubmitButton').css('display', 'block');
 			}
 			if(detailedExpeditionList.length)
@@ -256,7 +256,7 @@ var PS_MRObject = (function($, undefined) {
 
 					checkErrorGeneratedTickets(json);
 					detailedExpeditionList = checkSucceedGenerateTickets(json);
-					
+
 					if (detailedExpeditionList.length)
 						getTickets(detailedExpeditionList);
 					else
@@ -351,19 +351,19 @@ var PS_MRObject = (function($, undefined) {
 				}
 			});
 	}
-	
+
 	function PS_MRSubmitButtonPrintSelected(format) {
 		var history_id_list = new Array();
-		var history_id_list_str = '';		
+		var history_id_list_str = '';
 		$('input[name="history_id_list[]"]:checked').each(function()
 		{
 			var id_order = $.trim($(this).parent().next().html());
 			var expeditionNumber = $.trim($(this).parent().next().next().html());
 			history_id_list.push({'id_order':id_order, 'expeditionNumber':expeditionNumber});
-			expeditionNumber = strPad(expeditionNumber,8,0);				
+			expeditionNumber = strPad(expeditionNumber,8,0);
 			history_id_list_str += expeditionNumber+';';
 		});
-		
+
 		if(history_id_list.length) {
 			history_id_list_str = history_id_list_str.substr(0,(history_id_list_str.length-1));
 			$.ajax(
@@ -377,17 +377,17 @@ var PS_MRObject = (function($, undefined) {
 						'mrtoken' : mrtoken},
 					dataType: 'json',
 					success: function(json)
-					{						
+					{
 						var url = json.success[0];
 						if(format == 4 && url!=null) {
 							document.location.href= url.URL_PDF_A4;
 						}
 						if(format == 5 && url!=null) {
 							document.location.href= url.URL_PDF_A5;
-						}		
+						}
 						if(format == '10x15' && url!=null) {
 							document.location.href= url.URL_PDF_10x15;
-						}							
+						}
 					},
 					error: function(xhr, ajaxOptions, thrownError)
 					{
@@ -396,10 +396,10 @@ var PS_MRObject = (function($, undefined) {
 				});
 		}
 	}
-	
+
 	function strPad(input, length, string) {
-    	string = string || '0'; input = input + '';
-    	return input.length >= length ? input : new Array(length - input.length + 1).join(string) + input;
+		string = string || '0'; input = input + '';
+		return input.length >= length ? input : new Array(length - input.length + 1).join(string) + input;
 	}
 	/**
 	 * Display a fancy box displaying details about the
@@ -605,6 +605,13 @@ var PS_MRObject = (function($, undefined) {
 			alert(PS_MRTranslationList['errorSelection']);
 			return false;
 		}
+		// No relay point selected yet
+		if (PS_MRSelectedRelayPoint['relayPointNum'] == -1)
+		{
+			alert(PS_MRTranslationList['errorSelection']);
+			return false;
+		}
+
 		return true;
 	}
 
@@ -649,7 +656,7 @@ var PS_MRObject = (function($, undefined) {
 	 * @param carrier_id
 	 */
 	function PS_MRDisplayRelayPoint(json, blockContent, carrier_id)
-	{	
+	{
 		if (typeof json != 'undefined' && typeof blockContent != 'undefined')
 		{
 			numberDisplayed = 0;
@@ -690,11 +697,11 @@ var PS_MRObject = (function($, undefined) {
 						//if (!$.browser.msie)
 						PS_MRAddGMapMarker(carrier_id, json.success[relayPoint].Num, contentBlockid);
 						/*	else
-						 $('#' + contentBlockid).children('p').click(function() {
-						 PS_MROpenPopupDetail(json.success[relayPoint].permaLinkDetail);
-						 });*/
+						$('#' + contentBlockid).children('p').click(function() {
+						PS_MROpenPopupDetail(json.success[relayPoint].permaLinkDetail);
+						});*/
 					}
-				} 
+				}
 				PS_MRHandleSelectedRelayPoint();
 				$(this).fadeIn('fast');
 			});
@@ -728,7 +735,7 @@ var PS_MRObject = (function($, undefined) {
 	 */
 	function PS_MRFetchRelayPoint(carrierSelected)
 	{
-		carrier_id = carrierSelected.val().replace(',', ''); 
+		carrier_id = carrierSelected.val().replace(',', '');
 		// Block is an input, we need the 'tr' element
 		blockTR =$('#MR_PR_list_'+carrier_id+' tr');
 		// Add a new line to the table after the clicked parent element
@@ -1087,20 +1094,20 @@ var PS_MRObject = (function($, undefined) {
 		if ($('#' + block_form_id).length == 0)
 			$('#MR_error_account').fadeIn('fast');
 	}
-	
+
 	function checkToDisplayRelayList()
-	{		
+	{
 		if (typeof PS_MRData != 'undefined')
 		{
-			PS_MRSelectedRelayPoint['relayPointNum'] = PS_MRData.pre_selected_relay;	
-			
+			PS_MRSelectedRelayPoint['relayPointNum'] = PS_MRData.pre_selected_relay;
+
 			if (PS_MRData.PS_VERSION < '1.5') {
 				$('input[name="id_carrier"]').each(function(i, e){
 					var parent_element = $(e).closest('tr');
 					var new_element = 'MR_PR_list_'+$(e).val().replace(',', '');
 					var MR_idcarrier = $(e).val().replace(',', '');
 					MR_carrier = isMRCarrier(MR_idcarrier);
-					
+
 					if($('#'+new_element).length > 0) {
 						$('#'+new_element).remove();
 						if( isMRCarrier(MR_idcarrier)!=false && typeof(MR_carrier) != "undefined" && (MR_carrier.dlv_mode!='LD1' && MR_carrier.dlv_mode!='LDS' && MR_carrier.dlv_mode!='HOM')) {
@@ -1125,23 +1132,23 @@ var PS_MRObject = (function($, undefined) {
 							}
 						}
 					}
-					
-					
+
+
 					if($(e).attr('checked') == 'checked' || $(e).attr('checked')) {
 						if(MR_carrier != false) {
 							PS_MRCarrierMethodList[MR_idcarrier] = MR_carrier.id_mr_method;
-							PS_MRSelectedRelayPoint['carrier_id'] = MR_idcarrier; 
+							PS_MRSelectedRelayPoint['carrier_id'] = MR_idcarrier;
 							var new_element = 'MR_PR_list_'+MR_idcarrier;
-					
+
 							PS_MRCarrierSelectedProcess($(this), MR_idcarrier, MR_carrier.dlv_mode);
-						
+
 							if(MR_carrier.dlv_mode!='LD1' && MR_carrier.dlv_mode!='LDS' && MR_carrier.dlv_mode!='HOM')
 								$('.trMRSelected').fadeIn('fast');
 							else
 								$('.trMRSelected').fadeOut('fast');
 						}
-						else {				
-							PS_MRHideLastRelayPointList();	
+						else {
+							PS_MRHideLastRelayPointList();
 							PS_MRSelectedRelayPoint['relayPointNum'] = -1;
 							$('.trMRSelected').fadeOut('fast');
 						}
@@ -1172,25 +1179,25 @@ var PS_MRObject = (function($, undefined) {
 							+'</tr></table></div>');
 						}
 					}
-					
-					// Hide MR input if one of them is not selected 
+
+					// Hide MR input if one of them is not selected
 					if($(e).val() == carrier_selected)
 					{
 						console.log(carrier_selected);
 						if(MR_carrier != false) {
 							PS_MRCarrierMethodList[MR_idcarrier] = MR_carrier.id_mr_method;
-							PS_MRSelectedRelayPoint['carrier_id'] = MR_idcarrier; 
+							PS_MRSelectedRelayPoint['carrier_id'] = MR_idcarrier;
 							var new_element = 'MR_PR_list_'+MR_idcarrier;
-					
+
 							PS_MRCarrierSelectedProcess($(this), MR_idcarrier, MR_carrier.dlv_mode);
-						
+
 							if(MR_carrier.dlv_mode!='LD1' && MR_carrier.dlv_mode!='LDS' && MR_carrier.dlv_mode!='HOM')
 								$('.trMRSelected').fadeIn('fast');
 							else
 								$('.trMRSelected').fadeOut('fast');
 						}
-						else {				
-							PS_MRHideLastRelayPointList();	
+						else {
+							PS_MRHideLastRelayPointList();
 							PS_MRSelectedRelayPoint['relayPointNum'] = -1;
 							$('.trMRSelected').fadeOut('fast');
 						}
@@ -1199,7 +1206,7 @@ var PS_MRObject = (function($, undefined) {
 			}
 		}
 	}
-	
+
 	function isMRCarrier(id_carrier){
 		var carrier_list = PS_MRData.carrier_list;
 		for(i in carrier_list){
@@ -1280,11 +1287,11 @@ var PS_MRObject = (function($, undefined) {
 			width = ((width - ul_width) / 2);
 			$('#MR_config_menu').children('ul').css('margin-left', width + 'px');
 		}
-		
+
 		// 1.5 OPC Validation - Warn user to select a relay point
 			$('.payment_module a').live('click', function() {
-                            if (typeof PS_MRData != 'undefined')
-                            {
+							if (typeof PS_MRData != 'undefined')
+							{
 				if (PS_MRData.PS_VERSION >= '1.5' && PS_MRData.carrier)
 				{
 					var _return = !(!PS_MRSelectedRelayPoint['carrier_id'] || !PS_MRSelectedRelayPoint['relayPointNum']);
@@ -1292,18 +1299,18 @@ var PS_MRObject = (function($, undefined) {
 						alert(PS_MRTranslationList['errorSelection']);
 					return _return;
 				}
-                            }
+							}
 			});
-			
+
 			// If MR carrier selected, check MR relay point is selected too
-			$('input[name=processCarrier], button[name=processCarrier]').click(function(){  
+			$('input[name=processCarrier], button[name=processCarrier]').click(function(){
 				var _return = !(PS_MRSelectedRelayPoint['carrier_id'] && !PS_MRSelectedRelayPoint['relayPointNum']);
 				if (!_return)
 					alert(PS_MRTranslationList['errorSelection']);
-				
+
 				return _return;
 			});
-			
+
 			if (typeof PS_MRData != 'undefined')
 			{
 				if (PS_MRData.PS_VERSION < '1.5') {
@@ -1312,7 +1319,7 @@ var PS_MRObject = (function($, undefined) {
 					});
 				}
 			}
-			
+
 			// Handle input click of the other input to hide the previous relay point list displayed
 	});
 
@@ -1332,7 +1339,7 @@ var PS_MRObject = (function($, undefined) {
 
 
 /**
- * Check connexion to webservice	 * 
+ * Check connexion to webservice	 *
  */
 function mr_checkConnexion() {
 	var enseigne = $("#MR_enseigne_webservice").val();
@@ -1356,6 +1363,6 @@ function mr_checkConnexion() {
 				else
 					alert("Service Indisponible");
 			}
-		} 
+		}
 	});
 }
